@@ -2781,7 +2781,7 @@
   },
   "settings" : {
     "title" : "Einstellungen",
-    "discreet" : "Privaten Modus aktivieren",
+    "discreet" : "Diskrete Sicht de-/aktivieren",
     "helpButton" : "Hilfe",
     "tabs" : {
       "display" : "Allgemeines",
