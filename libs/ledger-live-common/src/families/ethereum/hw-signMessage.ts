@@ -32,25 +32,31 @@ const resolver: EthResolver = async (
   { path, message, rawMessage }
 ) => {
   const eth = new Eth(transport);
-  let result;
-
-  if (typeof message === "string") {
-    result = await eth.signPersonalMessage(path, rawMessage.slice(2));
-  } else {
-    if (getEnv("EXPERIMENTAL_EIP712")) {
-      result = await eth.signEIP712Message(path, message);
-    } else {
-      result = await eth.signEIP712HashedMessage(
-        path,
-        bufferToHex(domainHash(message)),
-        bufferToHex(messageHash(message))
-      );
+  const parsedMessage = (() => {
+    try {
+      return JSON.parse(message as string);
+    } catch (e) {
+      return message;
     }
+  })();
+
+  let result: Awaited<ReturnType<typeof eth.signPersonalMessage>>;
+  if (typeof parsedMessage === "string") {
+    result = await eth.signPersonalMessage(path, rawMessage.slice(2));
+    result.v -= 27;
+    // here the expected v is the parity/recoveryId, so we need to remove 27 (v is either 27 or 28)
+  } else {
+    result = getEnv("EXPERIMENTAL_EIP712")
+      ? await eth.signEIP712Message(path, parsedMessage)
+      : await eth.signEIP712HashedMessage(
+          path,
+          bufferToHex(domainHash(parsedMessage)),
+          bufferToHex(messageHash(parsedMessage))
+        );
+    // result.v stays untouched for EIP712 as the expected v is already good (27 or 28)
   }
 
-  let v: string | number = result["v"] - 27;
-  v = v.toString(16);
-
+  let v = result.v.toString(16);
   if (v.length < 2) {
     v = "0" + v;
   }
