@@ -1536,7 +1536,7 @@
       "provider" : "Anbieter",
       "payoutNetworkFees" : "Auszahlungsgebühren",
       "payoutNetworkFeesTooltip" : "Dieser Betrag wird nicht auf Ihrem Gerät angezeigt",
-      "acceptTerms" : "By validating this transaction, I accept\n<0>{{provider}}'s terms of use</0>"
+      "acceptTerms" : "Mit validierung dieser Transaktion, stimme ich\n<0>{{provider}}'s Nutzungsbedingungen zu</0>"
     },
     "swap2" : {
       "amountSent" : "Zu sendender Betrag",
